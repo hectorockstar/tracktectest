@@ -26,15 +26,15 @@ public class TrackTecController {
     }
 
     @Operation(summary = "Indica si la palabra es palindroma")
-    @GetMapping("isPallindrome")
+    @GetMapping("isPalindrome")
     @ResponseBody
-    public Boolean getIsPallindrome(@RequestParam("value") String value) {
+    public Boolean getIsPalindrome(@RequestParam("value") String value) {
         return trackTecService.isPalindrome(value);
     }
 
     @Operation(summary = "Devuelve los dias que han transcurrido desde la fecha ingresada")
     @GetMapping("birthdate")
-    public Long birthdate(@RequestParam("birthdate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthdate) {
+    public Long birthdate(@RequestParam("birthdate") @DateTimeFormat(pattern = "dd-MM-yyyy") Date birthdate) {
         return trackTecService.daysBetween(birthdate);
     }
 
