@@ -20,14 +20,12 @@ public class TrackTecController {
 
     @Operation(summary = "Devuelve un valor codificado")
     @GetMapping("decodeIbutton")
-    @ResponseBody
-    public String getDecodedIbutton (@RequestParam("ibuttonValue") String ibuttonValue) {
+    public String getDecodedIbutton(@RequestParam("ibuttonValue") String ibuttonValue) {
         return trackTecService.decodeIbuttonValue(ibuttonValue);
     }
 
     @Operation(summary = "Indica si la palabra es palindroma")
     @GetMapping("isPalindrome")
-    @ResponseBody
     public Boolean getIsPalindrome(@RequestParam("value") String value) {
         return trackTecService.isPalindrome(value);
     }

@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -33,10 +33,9 @@ public class TrackTecService {
                 - No se puede usar ciclos para recorrer la cadena.
      */
     public String decodeIbuttonValue(String ibuttonValue) {
-        String[] splittedValue = ibuttonValue.split("(?<=\\G.{2})");
-        List<String> indexesValueList = new ArrayList<>(List.of(splittedValue));
+        List<String> indexesValueList = new ArrayList<>(List.of(ibuttonValue.split("(?<=\\G.{2})")));
         Collections.reverse(indexesValueList);
-        return indexesValueList.stream().collect(Collectors.joining(""));
+        return String.join("", indexesValueList);
     }
 
     /*
@@ -55,11 +54,9 @@ public class TrackTecService {
     }
 
     private String reversedStringValue(String value){
-        String[] splittedValue = value.toLowerCase().split("");
-        List<String> indexesValueList = new ArrayList<>(List.of(splittedValue));
+        List<String> indexesValueList = new ArrayList<>(List.of(value.toLowerCase().split("")));
         Collections.reverse(indexesValueList);
-
-        return indexesValueList.stream().collect(Collectors.joining(""));
+        return String.join("", indexesValueList);
     }
 
 
@@ -113,18 +110,14 @@ public class TrackTecService {
     }
 
     private String getDateFromStringChain(String chain) throws ParseException {
-        String regex = ".*,(\\d{14}),";
-        Matcher m = Pattern.compile(regex).matcher(chain);
-        String strDate = "";
+        Matcher m = Pattern.compile(".*,(\\d{14}),").matcher(chain);
         if (m.find()) {
-            m.toMatchResult();
-            Date date = new SimpleDateFormat("yyyyMMddHHmmss").parse(m.group(1));
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            strDate = dateFormat.format(date);
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .format(new SimpleDateFormat("yyyyMMddHHmmss")
+                                .parse(m.group(1)));
         } else {
-            strDate = "No se encontró fecha";
+            return "No se encontró fecha";
         }
-        return strDate;
     }
 
     /*
@@ -149,16 +142,9 @@ public class TrackTecService {
     }
 
     private String encoderAction(String originalValue){
-        List<String> indexesValueList = new ArrayList<>(List.of( originalValue.split("")));
-        ListIterator<String> iterator = indexesValueList.listIterator();
-        while (iterator.hasNext()) {
-            String next = iterator.next();
-            if (TrackTecConstants.CHAR_MAPPING_FOR_IMEI.get(next) != null) {
-                iterator.set(TrackTecConstants.CHAR_MAPPING_FOR_IMEI.get(next));
-            }
-        }
-
-        return indexesValueList.stream().collect(Collectors.joining(""));
+        return String.join("", Stream.of( originalValue.split(""))
+                .map(o -> TrackTecConstants.CHAR_MAPPING_FOR_IMEI.get(o.toUpperCase()) != null ? TrackTecConstants.CHAR_MAPPING_FOR_IMEI.get(o.toUpperCase()) : o)
+                .toList());
     }
 
 
